@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 
-use Illuminate\Http\Request;
 
+use App\Http\Requests\RegisterRequest;
 
 
 use App\Models\User;
@@ -12,13 +12,9 @@ use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-            'c_password' => 'required|same:password'
-        ]);
+
 
         $user = User::create([
             'email' => $request->email,
