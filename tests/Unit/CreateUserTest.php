@@ -3,6 +3,9 @@
 namespace Tests\Unit;
 
 use App\Http\Requests\RegisterRequest;
+use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Artisan;
 use PHPUnit\Framework\TestCase;
 use App\Services\UserService;
 
@@ -10,31 +13,32 @@ use App\Services\UserService;
 class CreateUserTest extends TestCase
 {
 
+    use DatabaseMigrations;
 
     private $userService;
+
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->userService = new UserService();
-        $this->userService->createUser();
+        $this->userService = $this->app->make(UserService::class);
+        Artisan::call('passport:install');
+
     }
-
-    protected function tearDown(): void
-    {
-        $this->userService = null;
-        parent::tearDown();
-    }
-
-
 
     public function testCreateUser()
     {
 
-
-        $this->assertDatabaseHas('users', [
-            'email' => 'qwerty@gmail.com',
+        $data = [
+            'email' => 'qwerty1234@gmail.com',
             'password' => 'qwerty1234'
+        ];
+
+        $user = $this->userService->createUser($data);
+
+        $this->assertInstanceOf(User::class, $user)
+        ->assertDatabaseHas('users', [
+            'email' => 'qwerty1234@gmail.com'
         ]);
     }
 }
