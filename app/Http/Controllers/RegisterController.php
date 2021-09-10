@@ -28,7 +28,7 @@ class RegisterController extends Controller
 
         $user = $this->userService->createUser($data);
 
-        return response($this->userService->token);
+        return response(['token' => $this->userService->token], 201);
     }
 
 }

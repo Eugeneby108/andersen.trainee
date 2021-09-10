@@ -41,7 +41,7 @@ class RegisterTest extends TestCase
          $data['c_password'] = '40';
 
          $this->json('POST', 'api/users', $data, $headers)
-             ->assertStatus(404);
+             ->assertStatus(422);
      }
 
 }
