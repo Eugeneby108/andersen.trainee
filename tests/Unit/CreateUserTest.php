@@ -20,10 +20,9 @@ class CreateUserTest extends TestCase
         parent::setUp();
         $this->userService = $this->app->make(UserService::class);
         Artisan::call('passport:install');
-
     }
 
-    public function testExample()
+    public function testCreateUser()
     {
         $data = [
             'email' => 'qwerty1234@gmail.com',
@@ -31,35 +30,10 @@ class CreateUserTest extends TestCase
         ];
         $user = $this->userService->createUser($data);
         $this->assertInstanceOf(User::class, $user);
-    }
-    /*use DatabaseMigrations;
-
-    private $userService;
-
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->userService = $this->app->make(UserService::class);
-        Artisan::call('passport:install');
-
-    }
-
-    public function testCreateUser()
-    {
-
-        $data = [
-            'email' => 'qwerty1234@gmail.com',
-            'password' => 'qwerty1234'
-        ];
-
-        $user = $this->userService->createUser($data);
-
-        $this->assertInstanceOf(User::class, $user)
-        ->assertDatabaseHas('users', [
+        $this->assertDatabaseHas('users', [
             'email' => 'qwerty1234@gmail.com'
         ]);
-    }*/
+    }
 }
 
 

@@ -17,8 +17,7 @@ class UserService
             ]);
 
             $this->token = $user->createToken('LaravelAuthApp')->accessToken;
+
             return $user;
-
-
     }
 }
