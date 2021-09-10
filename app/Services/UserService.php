@@ -9,7 +9,7 @@ class UserService
 {
         public $token;
 
-        public function createUser (array $data)
+        public function createUser(array $data)
         {
             $user = User::create([
                 'email' => $data['email'],
