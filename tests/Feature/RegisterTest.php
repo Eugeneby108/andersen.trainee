@@ -19,7 +19,6 @@ class RegisterTest extends TestCase
     }
 
     public function testRegister()
-
     {
         $data = [
             'email' => 'qwerty1234@gmail.com',
@@ -43,7 +42,6 @@ class RegisterTest extends TestCase
          $this->json('POST', 'api/users', $data, $headers)
              ->assertStatus(422);
      }
-
 }
 
 
