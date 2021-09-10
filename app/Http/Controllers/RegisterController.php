@@ -26,7 +26,9 @@ class RegisterController extends Controller
         'password' => bcrypt($request->password)
     ];
 
-        $this->userService->createUser($request);
+        $user = $this->userService->createUser($data);
+
+        return response($this->userService->token);
     }
 
 }

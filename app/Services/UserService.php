@@ -7,11 +7,16 @@ use App\Models\User;
 
 class UserService
 {
-        public function createUser (RegisterController $data)
-        {
-            $user = User::create($data);
+        public $token;
 
-            $user->createToken('LaravelAuthApp')->accessToken;
+        public function createUser (array $data)
+        {
+            $user = User::create([
+                'email' => $data['email'],
+                'password' => bcrypt($data['password'])
+            ]);
+
+            $this->token = $user->createToken('LaravelAuthApp')->accessToken;
             return $user;
 
 

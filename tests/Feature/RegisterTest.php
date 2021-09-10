@@ -32,7 +32,7 @@ class RegisterTest extends TestCase
             'Content-Type' => 'application/json'
         ];
 
-        $this->json('POST', 'api/register', $data, $headers)
+        $this->json('POST', 'api/users', $data, $headers)
             ->assertStatus(201)
             ->assertJsonStructure([
             'token'
@@ -40,8 +40,8 @@ class RegisterTest extends TestCase
 
          $data['c_password'] = '40';
 
-         $this->json('POST', 'api/register', $data, $headers)
-             ->assertStatus(500);
+         $this->json('POST', 'api/users', $data, $headers)
+             ->assertStatus(404);
      }
 
 }
