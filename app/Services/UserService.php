@@ -2,17 +2,14 @@
 
 namespace App\Services;
 
-use App\Http\Requests\RegisterRequest;
+use App\Http\Controllers\RegisterController;
 use App\Models\User;
 
 class UserService
 {
-        public function createUser (RegisterRequest $request)
+        public function createUser (RegisterController $data)
         {
-            $user = User::create([
-                'email' => $request->email,
-                'password' => bcrypt($request->password)
-            ]);
+            $user = User::create($data);
 
             $user->createToken('LaravelAuthApp')->accessToken;
             return $user;

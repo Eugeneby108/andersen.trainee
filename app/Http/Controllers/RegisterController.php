@@ -12,13 +12,21 @@ class RegisterController extends Controller
 {
     protected $userService;
 
+
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
+
     }
 
     public function register (RegisterRequest $request)
     {
+        $data = [
+        'email' => $request->email,
+        'password' => bcrypt($request->password)
+    ];
+
         $this->userService->createUser($request);
     }
+
 }

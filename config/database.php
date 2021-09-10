@@ -35,7 +35,7 @@ return [
 
     'connections' => [
 
-        'sqlite' => [
+        'sqlite_memory' => [
             'driver' => 'sqlite',
             'database' => ':memory:',
             'prefix' => '',

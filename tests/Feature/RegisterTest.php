@@ -23,7 +23,8 @@ class RegisterTest extends TestCase
     {
         $data = [
             'email' => 'qwerty1234@gmail.com',
-            'password' => 'qwerty1234'
+            'password' => 'qwerty1234',
+            'c_password' => 'qwerty1234'
         ];
 
         $headers = [
@@ -37,11 +38,11 @@ class RegisterTest extends TestCase
             'token'
         ]);
 
-        $data['c_password'] = '40';
+         $data['c_password'] = '40';
 
-        $this->json('POST', 'api/register', $data, $headers)
-            ->assertStatus(500);
-    }
+         $this->json('POST', 'api/register', $data, $headers)
+             ->assertStatus(500);
+     }
 
 }
 
