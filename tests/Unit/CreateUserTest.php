@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 use App\Services\UserService;
 
-
 class CreateUserTest extends TestCase
 {
     use DatabaseMigrations;
@@ -35,8 +34,3 @@ class CreateUserTest extends TestCase
         ]);
     }
 }
-
-
-
-
-

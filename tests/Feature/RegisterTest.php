@@ -43,5 +43,3 @@ class RegisterTest extends TestCase
              ->assertStatus(422);
      }
 }
-
-
