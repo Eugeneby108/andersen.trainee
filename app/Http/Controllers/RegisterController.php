@@ -15,7 +15,7 @@ class RegisterController extends Controller
         $this->userService = $userService;
     }
 
-    public function register (RegisterRequest $request)
+    public function register(RegisterRequest $request)
     {
         $data = [
         'email' => $request->email,
@@ -27,4 +27,17 @@ class RegisterController extends Controller
         return response(['token' => $this->userService->token], 201);
     }
 
+    public function login(RegisterRequest $request){
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password
+        ];
+
+        if (auth()->attempt($credentials)) {
+            $this->userService->token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
+            return response()->json(['token' => $this->userService->token], 201);
+        } else {
+            return response()->json(['error' => 'UnAuthorised'], 401);
+        }
+    }
 }
