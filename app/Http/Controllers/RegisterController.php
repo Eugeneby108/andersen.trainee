@@ -34,8 +34,8 @@ class RegisterController extends Controller
         ];
 
         if (auth()->attempt($credentials)) {
-            $this->userService->token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
-            return response()->json(['token' => $this->userService->token], 201);
+            $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
+            return response()->json(['token' => $token], 200);
         } else {
             return response()->json(['error' => 'UnAuthorised'], 401);
         }

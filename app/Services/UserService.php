@@ -20,14 +20,4 @@ class UserService
 
             return $user;
     }
-
-        public function loginUser(array $credentials)
-        {
-            $login = [
-                'email' => $credentials['email'],
-                'password' => bcrypt($credentials['password'])
-            ];
-
-            $this->token = $login->createToken('LaravelAuthApp')->accessToken;
-        }
 }
