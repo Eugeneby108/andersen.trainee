@@ -8,20 +8,8 @@ use App\Http\Requests\ResetRequest;
 use App\Models\ResetPassword;
 use App\Models\User;
 use App\Services\UserService;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Password as RulesPassword;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Contracts\Auth\CanResetPassword;
-use Laravel\Passport\Passport;
-use Illuminate\Auth\Passwords\PasswordBroker;
-use function Composer\Autoload\includeFile;
 
 class RegisterController extends Controller
 {
@@ -64,15 +52,13 @@ class RegisterController extends Controller
         $user = User::where('email', $request->email)->first();
         $token = ResetPassword::where('token', $request->token)->first();
         if($token){
+            if ($token->created_at->copy()->addHours(2)->isPast()){
+                $token->delete();
+                return response()->json(['token error' => 'Try to get it again'], 400);
+            }
             return response()->json(['token error' => 'Token is already exist'], 400);
         }
-
-        if($token->created_at->copy()->addHours(2)->isPast()){
-            $token->delete();
-            return response()->json(['token error' => 'Try to get it again'], 404);
-        }
         $token = str::random(60);
-
         ResetPassword::create([
             'user_id' => $user->id,
             'email' => $user->email,
@@ -98,6 +84,5 @@ class RegisterController extends Controller
         $user->fill(['password' => bcrypt($newPassword)]);
         $user->save();
         return response('New password has been saved');
-
     }
 }
