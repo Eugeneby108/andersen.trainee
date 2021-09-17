@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\NewPasswordRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetRequest;
 use App\Models\ResetPassword;
 use App\Models\User;
 use App\Services\UserService;
@@ -56,7 +58,7 @@ class RegisterController extends Controller
         }
     }
 
-    public function resetPassword(RegisterRequest $request)
+    public function resetPassword(ResetRequest $request)
     {
         $user = User::where('email', $request->email)->first();
         $token = str::random(60);
@@ -65,25 +67,23 @@ class RegisterController extends Controller
             'email' => $user->email,
             'token' => $token
         ]);
-        $mail = $request->email;
 
+        $mail = $request->email;
         Mail::to($mail)->send(new \App\Mail\PasswordReset($token));
+        return ('Email is sending');
     }
 
-    public function newPassword(RegisterRequest $request)
+    public function newPassword(NewPasswordRequest $request)
     {
-        $newToken = ResetPassword::where('email', $request->email)->value('token','created_at');
-        $newPassword = $request->password;
-        $user = new User([
-            'email' => $request->email,
-            'password' => Hash::make($newPassword),
-        ]);
-
-        ResetPassword::where('email', $request->email)->delete();
-
-        if(!$newToken){
-            $this->resetPassword($request);
+        $token = ResetPassword::where('token', $request->token)->first();
+        if($token->created_at->copy()->addMinutes(2)->isPast()){
+            return response()->json(['token error' => 'Try to get it again']);
         }
-
+        $id = ResetPassword::where('token', $request->token)->value('user_id');
+        $user = User::findOrFail($id);
+        $newPassword = $request->password;
+        $user->fill(['password' => bcrypt($newPassword)]);
+        $user->save();
+        ResetPassword::where('token', $request->token)->delete();
     }
 }
