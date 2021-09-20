@@ -51,7 +51,7 @@ class RegisterController extends Controller
 
         $this->userService->resetPass($dataReset);
 
-        $mail = $request->email;
+        $mail = $dataReset;
         Mail::to($mail)->send(new \App\Mail\PasswordReset($this->userService->token));
         return response('Email is sending succesfully');
     }
@@ -61,7 +61,7 @@ class RegisterController extends Controller
         $dataNewPass = [
             'token' => $request->token,
             'password' => $request->password,
-            'c_password' => $request->c_password,
+            'c_password'
         ];
 
         $this->userService->newPass($dataNewPass);
