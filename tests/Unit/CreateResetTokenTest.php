@@ -29,8 +29,7 @@ class CreateResetTokenTest extends TestCase
         'password' => 'qwerty1234',
     ];
         $this->userService->createUser($data);
-        $data = 'qwerty1234@gmail.com';
-        $token = $this->userService->resetPass($data);
+        $token = $this->userService->resetPass($data['email']);
         $this->assertDatabaseHas('reset_passwords', [
             'token' => $this->userService->token
         ]);
