@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 
@@ -21,3 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post("/users", [RegisterController::class, 'register']);
 Route::post("/login", [RegisterController::class, 'login']);
+Route::post("/reset", [RegisterController::class, 'resetPassword']);
+Route::post("/new_password", [RegisterController::class, 'newPassword']);
+
+
+

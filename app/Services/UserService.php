@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Http\Controllers\RegisterController;
 use App\Models\User;
+use App\Models\ResetPassword;
+use Illuminate\Support\Str;
 
 class UserService
 {
@@ -19,5 +20,41 @@ class UserService
             $this->token = $user->createToken('LaravelAuthApp')->accessToken;
 
             return $user;
+    }
+
+        public function resetPass(string $dataReset)
+        {
+            $user = User::where('email', $dataReset)->first();
+            $token = ResetPassword::where('email', $dataReset)->first();
+            if($token){
+                if ($token->created_at->copy()->addHours(2)->isPast()){
+                    $token->delete();
+                    return response()->json(['token error' => 'Try to get it again'], 400);
+                }
+                return response()->json(['token error' => 'Token is already exist'], 400);
+            }
+            $token = str::random(60);
+            $this->token = $token;
+            ResetPassword::create([
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'token' => $token
+            ]);
+        }
+
+    public function newPass(array $dataNewPass)
+    {
+            $token = ResetPassword::where('token', $dataNewPass['token'])->first();
+            if($token->created_at->copy()->addHours(2)->isPast()){
+                $token->delete();
+                return response()->json(['token error' => 'Try to get it again'], 404);
+            }
+
+            $id = $token->user_id;
+            $user = User::findOrFail($id);
+            $newPassword = $dataNewPass['password'];
+            $user->fill(['password' => bcrypt($newPassword)]);
+            $user->save();
+            $token->delete();
     }
 }
