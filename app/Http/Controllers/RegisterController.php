@@ -5,11 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\NewPasswordRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetRequest;
-use App\Models\ResetPassword;
-use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -49,40 +46,27 @@ class RegisterController extends Controller
 
     public function resetPassword(ResetRequest $request)
     {
-        $user = User::where('email', $request->email)->first();
-        $token = ResetPassword::where('token', $request->token)->first();
-        if($token){
-            if ($token->created_at->copy()->addHours(2)->isPast()){
-                $token->delete();
-                return response()->json(['token error' => 'Try to get it again'], 400);
-            }
-            return response()->json(['token error' => 'Token is already exist'], 400);
-        }
-        $token = str::random(60);
-        ResetPassword::create([
-            'user_id' => $user->id,
-            'email' => $user->email,
-            'token' => $token
-        ]);
+        $dataReset = [
+            'email' => $request->email,
+            'token' => $this->userService->token
+        ];
+
+        $this->userService->resetPass($dataReset);
 
         $mail = $request->email;
-        Mail::to($mail)->send(new \App\Mail\PasswordReset($token));
+        Mail::to($mail)->send(new \App\Mail\PasswordReset($this->userService->token));
         return response('Email is sending succesfully');
     }
 
     public function newPassword(NewPasswordRequest $request)
     {
-        $token = ResetPassword::where('token', $request->token)->first();
-        if($token->created_at->copy()->addHours(2)->isPast()){
-            $token->delete();
-            return response()->json(['token error' => 'Try to get it again'], 404);
-        }
+        $dataNewPass = [
+            'token' => $request->token,
+            'password' => $request->password,
+            'c_password' => $request->c_password,
+        ];
 
-        $id = $token->user_id;
-        $user = User::findOrFail($id);
-        $newPassword = $request->password;
-        $user->fill(['password' => bcrypt($newPassword)]);
-        $user->save();
+        $this->userService->newPass($dataNewPass);
         return response('New password has been saved');
     }
 }
