@@ -46,10 +46,8 @@ class RegisterController extends Controller
 
     public function resetPassword(ResetRequest $request)
     {
-        $dataReset = [
-            'email' => $request->email,
-            'token' => $this->userService->token
-        ];
+        $dataReset = $request->email;
+
 
         $this->userService->resetPass($dataReset);
 

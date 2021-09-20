@@ -22,10 +22,10 @@ class UserService
             return $user;
     }
 
-        public function resetPass(array $dataReset)
+        public function resetPass(string $dataReset)
         {
-            $user = User::where('email', $dataReset['email'])->first();
-            $token = ResetPassword::where('token', $dataReset['token'])->first();
+            $user = User::where('email', $dataReset)->first();
+            $token = ResetPassword::where('email', $dataReset)->first();
             if($token){
                 if ($token->created_at->copy()->addHours(2)->isPast()){
                     $token->delete();
