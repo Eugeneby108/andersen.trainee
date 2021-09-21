@@ -57,4 +57,11 @@ class UserService
             $user->save();
             $token->delete();
     }
+
+    public function updateUser(array $dataUpdate)
+    {
+
+
+
+    }
 }

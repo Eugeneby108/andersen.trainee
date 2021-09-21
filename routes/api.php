@@ -24,6 +24,7 @@ Route::post("/users", [RegisterController::class, 'register']);
 Route::post("/login", [RegisterController::class, 'login']);
 Route::post("/reset", [RegisterController::class, 'resetPassword']);
 Route::post("/new_password", [RegisterController::class, 'newPassword']);
+Route::put("/users/{id}", [RegisterController::class, 'update']);
 
 
 

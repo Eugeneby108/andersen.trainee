@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\NewPasswordRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetRequest;
+use App\Http\Requests\UpdateRequest;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Mail;
 
@@ -66,5 +68,21 @@ class RegisterController extends Controller
 
         $this->userService->newPass($dataNewPass);
         return response('New password has been saved');
+    }
+
+    public function update(UpdateRequest $request, $id)
+    {
+
+        $user = User::findOrFail($id);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+        ]);
+
+
+
+        return response($user);
     }
 }
