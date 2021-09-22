@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\ResetPassword;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class UserService
@@ -58,10 +59,26 @@ class UserService
             $token->delete();
     }
 
-    public function updateUser(array $dataUpdate)
+    public function updateUser(array $dataUpdate, $id)
     {
+        $user = User::findOrFail($id);
 
+        foreach ($dataUpdate as $value){
+            if(!$value){
+                $value = $user->value;
+            }
+        }
 
+        if (Gate::allows('update-user', $user)) {
+            $user->fill([
+                'name' => $dataUpdate['name'],
+                'email' => $dataUpdate['email'],
+                'password' => $dataUpdate['password'],
+            ]);
+            $user->save();
+        }else{
+            return response('Incorrect');
+        }
 
     }
 }

@@ -31,5 +31,9 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes();
 
         Passport::tokensExpireIn(Carbon::now()->addHours(2));
+
+        Gate::define('update-user', function ($user, $request) {
+            return $user->id == $request->id;
+        });
     }
 }

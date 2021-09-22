@@ -8,6 +8,7 @@ use App\Http\Requests\ResetRequest;
 use App\Http\Requests\UpdateRequest;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
@@ -72,17 +73,14 @@ class RegisterController extends Controller
 
     public function update(UpdateRequest $request, $id)
     {
-
-        $user = User::findOrFail($id);
-
-        $user->update([
+        $dataUpdate = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-        ]);
+            'c_password' => $request->c_password
+        ];
 
-
-
-        return response($user);
+        $this->userService->updateUser($dataUpdate, $id);
+        return response('Data has been saved succesfully');
     }
 }
