@@ -57,4 +57,13 @@ class UserService
             $user->save();
             $token->delete();
     }
+
+    public function updateUser(array $dataUpdate, User $id)
+    {
+        $data = [];
+        if (!is_null($dataUpdate['name'])) {$data['name'] = $dataUpdate['name'];}
+        if (!is_null($dataUpdate['email'])) {$data['email'] = $dataUpdate['email'];}
+        if (!is_null($dataUpdate['password'])) {$data['password'] = bcrypt($dataUpdate['password']);}
+        $id->fill($data)->save();
+    }
 }
