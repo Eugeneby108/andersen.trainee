@@ -3,10 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Services\UserService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -26,8 +23,6 @@ class UpdateAccessTest extends TestCase
         $data = [
             'name' => 'qwerty'
         ];
-
-
 
         $headers = [
             'Accept' => 'application/json',

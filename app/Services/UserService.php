@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\ResetPassword;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
-use function PHPUnit\Framework\isEmpty;
 
 class UserService
 {
