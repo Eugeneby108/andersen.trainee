@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\ResetPassword;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use function PHPUnit\Framework\isEmpty;
 
 class UserService
 {
@@ -59,26 +60,12 @@ class UserService
             $token->delete();
     }
 
-    public function updateUser(array $dataUpdate, $id)
+    public function updateUser(array $dataUpdate, User $id)
     {
-        $user = User::findOrFail($id);
-
-        foreach ($dataUpdate as $value){
-            if(!$value){
-                $value = $user->value;
-            }
-        }
-
-        if (Gate::allows('update-user', $user)) {
-            $user->fill([
-                'name' => $dataUpdate['name'],
-                'email' => $dataUpdate['email'],
-                'password' => $dataUpdate['password'],
-            ]);
-            $user->save();
-        }else{
-            return response('Incorrect');
-        }
-
+        $data = [];
+        if (!is_null($dataUpdate['name'])) {$data['name'] = $dataUpdate['name'];}
+        if (!is_null($dataUpdate['email'])) {$data['email'] = $dataUpdate['email'];}
+        if (!is_null($dataUpdate['password'])) {$data['password'] = bcrypt($dataUpdate['password']);}
+        $id->fill($data)->save();
     }
 }

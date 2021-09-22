@@ -56,7 +56,7 @@ class RegisterController extends Controller
 
         $mail = $dataReset;
         Mail::to($mail)->send(new \App\Mail\PasswordReset($this->userService->token));
-        return response('Email is sending succesfully');
+        return response('Email is sending successfully');
     }
 
     public function newPassword(NewPasswordRequest $request)
@@ -71,16 +71,18 @@ class RegisterController extends Controller
         return response('New password has been saved');
     }
 
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateRequest $request, User $id)
     {
         $dataUpdate = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'c_password' => $request->c_password
         ];
-
+        if (Gate::allows('update-user', $id)) {
         $this->userService->updateUser($dataUpdate, $id);
-        return response('Data has been saved succesfully');
+        }else{
+            return response('Access denied', 403);
+        }
+        return response('Data has been saved successfully');
     }
 }
