@@ -26,16 +26,11 @@ class ShowAllTest extends TestCase
             'Content-Type' => 'application/json',
         ];
 
-        User::factory()->count(1)->create(
-            [
-                'name' => 'qwerty',
-                'email' => 'ert@gmail.com'
-            ]
-        );
-
-        $this->json('GET', 'api/users',$headers)
+        $this->json('GET', 'api/users/', $headers)
+            ->assertStatus(200);
+        $this->json('GET', 'api/users', $headers)
             ->assertJsonStructure([
-                'email'
+                'users'
             ]);
     }
 }
