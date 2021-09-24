@@ -25,6 +25,8 @@ Route::post("/login", [RegisterController::class, 'login']);
 Route::post("/reset", [RegisterController::class, 'resetPassword']);
 Route::post("/new_password", [RegisterController::class, 'newPassword']);
 Route::middleware('auth:api')->put("/users/{id}", [RegisterController::class, 'update']);
+Route::get("/users", [RegisterController::class, 'show']);
+Route::middleware('auth:api')->get("/users/{id}", [RegisterController::class, 'showId']);
 
 
 

@@ -6,8 +6,10 @@ use App\Http\Requests\NewPasswordRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetRequest;
 use App\Http\Requests\UpdateRequest;
+use App\Http\Resources\ShowResource;
 use App\Models\User;
 use App\Services\UserService;
+use Composer\DependencyResolver\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 
@@ -84,5 +86,19 @@ class RegisterController extends Controller
             return response('Access denied', 403);
         }
         return response('Data has been saved successfully');
+    }
+
+    public function show()
+    {
+        $users = User::all();
+        return response()->json(['users' => $users->pluck('email')]);
+    }
+
+    public function showId(User $id)
+    {
+        if (Gate::allows('show-user', $id)){
+            return new ShowResource($id);
+        }
+        return response('Access denied', 403);
     }
 }
