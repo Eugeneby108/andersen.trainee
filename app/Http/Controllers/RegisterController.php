@@ -6,8 +6,10 @@ use App\Http\Requests\NewPasswordRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetRequest;
 use App\Http\Requests\UpdateRequest;
+use App\Http\Resources\ShowResource;
 use App\Models\User;
 use App\Services\UserService;
+use Composer\DependencyResolver\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 
@@ -29,7 +31,7 @@ class RegisterController extends Controller
 
         $user = $this->userService->createUser($data);
 
-        return response(['token' => $this->userService->token], 201);
+        return response()->json(['token' => $this->userService->token], 201);
     }
 
     public function login(RegisterRequest $request)
@@ -43,7 +45,7 @@ class RegisterController extends Controller
             $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
             return response()->json(['token' => $token], 200);
         } else {
-            return response()->json(['error' => 'UnAuthorised'], 401);
+            return response()->json(['Error' => 'UnAuthorised'], 401);
         }
     }
 
@@ -56,7 +58,7 @@ class RegisterController extends Controller
 
         $mail = $dataReset;
         Mail::to($mail)->send(new \App\Mail\PasswordReset($this->userService->token));
-        return response('Email is sending successfully');
+        return response()->json(['Success' => 'Email is sending successfully']);
     }
 
     public function newPassword(NewPasswordRequest $request)
@@ -68,7 +70,7 @@ class RegisterController extends Controller
         ];
 
         $this->userService->newPass($dataNewPass);
-        return response('New password has been saved');
+        return response()->json(['Success' => 'New password has been saved']);
     }
 
     public function update(UpdateRequest $request, User $id)
@@ -81,8 +83,22 @@ class RegisterController extends Controller
         if (Gate::allows('update-user', $id)) {
         $this->userService->updateUser($dataUpdate, $id);
         }else{
-            return response('Access denied', 403);
+            return response()->json(['Error' => 'Access denied'], 403);
         }
-        return response('Data has been saved successfully');
+        return response()->json(['Success' => 'Data has been saved successfully']);
+    }
+
+    public function show()
+    {
+        $users = User::all();
+        return response()->json(['users' => $users->pluck('email')]);
+    }
+
+    public function showId(User $id)
+    {
+        if (Gate::allows('show-user', $id)){
+            return new ShowResource($id);
+        }
+        return response()->json(['Error' => 'Access denied'], 403);
     }
 }
