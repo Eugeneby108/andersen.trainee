@@ -2,10 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
@@ -27,8 +24,7 @@ class ShowAllTest extends TestCase
         ];
 
         $this->json('GET', 'api/users/', $headers)
-            ->assertStatus(200);
-        $this->json('GET', 'api/users', $headers)
+            ->assertStatus(200)
             ->assertJsonStructure([
                 'users'
             ]);

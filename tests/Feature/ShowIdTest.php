@@ -37,8 +37,7 @@ class ShowIdTest extends TestCase
         $this->json('GET', 'api/users/'."$user2->id", $headers)
             ->assertStatus(403);
         $this->json('GET', 'api/users/'."$user1->id", $headers)
-            ->assertStatus(200);
-        $this->json('GET', 'api/users/'."$user1->id",$headers)
+            ->assertStatus(200)
             ->assertJsonStructure([
                 'data'
             ]);
