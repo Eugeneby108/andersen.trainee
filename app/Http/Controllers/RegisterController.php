@@ -12,6 +12,7 @@ use App\Services\UserService;
 use Composer\DependencyResolver\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class RegisterController extends Controller
 {
@@ -100,5 +101,20 @@ class RegisterController extends Controller
             return new ShowResource($id);
         }
         return response()->json(['Error' => 'Access denied'], 403);
+    }
+
+    public function delete(User $id)
+    {
+        if (!Gate::allows('delete-user', $id)){
+            return response()->json(['Error' => 'Access denied'], 403);
+        }
+        $status = $id::Inactive;
+        $id->fill(['status' => $status])->save();
+        $pdf = PDF::loadView('pdf.invoice');
+        Mail::send('pdf.invoice', [$id], function($message)use($id, $pdf) {
+            $message->to($id['email'])
+                ->attachData($pdf->output(), "invoice.pdf");
+        });
+        return response()->json(['Success' => 'Email is sending successfully']);
     }
 }
