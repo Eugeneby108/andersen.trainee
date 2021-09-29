@@ -41,8 +41,8 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => $request->password
         ];
-
-        if (auth()->attempt($credentials)) {
+        $status =User::where('email', $request->email)->value('status');
+        if (auth()->attempt($credentials) and $status == 1) {
             $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
             return response()->json(['token' => $token], 200);
         } else {
@@ -53,7 +53,6 @@ class RegisterController extends Controller
     public function resetPassword(ResetRequest $request)
     {
         $dataReset = $request->email;
-
 
         $this->userService->resetPass($dataReset);
 
@@ -108,13 +107,12 @@ class RegisterController extends Controller
         if (!Gate::allows('delete-user', $id)){
             return response()->json(['Error' => 'Access denied'], 403);
         }
-        $status = $id::Inactive;
-        $id->fill(['status' => $status])->save();
+        $id->fill(['status' => $id::Inactive])->save();
         $pdf = PDF::loadView('pdf.invoice');
         Mail::send('pdf.invoice', [$id], function($message)use($id, $pdf) {
             $message->to($id['email'])
                 ->attachData($pdf->output(), "invoice.pdf");
         });
-        return response()->json(['Success' => 'Email is sending successfully']);
+        return response()->json(['Success' => 'Account got inactive and email is sending successfully'], 204);
     }
 }

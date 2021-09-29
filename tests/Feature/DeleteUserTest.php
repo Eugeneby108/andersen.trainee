@@ -39,7 +39,7 @@ class DeleteUserTest extends TestCase
         $this->json('DELETE', 'api/users/'."$user2->id", $headers)
             ->assertStatus(403);
         $this->json('DELETE', 'api/users/'."$user1->id", $headers)
-            ->assertStatus(200);
+            ->assertStatus(204);
         $this->assertDatabaseHas('users', [
                 'status' => User::Inactive
             ]);
