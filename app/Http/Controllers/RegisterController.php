@@ -111,7 +111,7 @@ class RegisterController extends Controller
         $pdf = PDF::loadView('pdf.invoice');
         Mail::send('pdf.invoice', [$id], function($message)use($id, $pdf) {
             $message->to($id['email'])
-                ->attachData($pdf->output(), "invoice.pdf");
+                ->attachData($pdf->output(), "deleteInfo.pdf");
         });
         return response()->json(['Success' => 'Account got inactive and email is sending successfully'], 204);
     }
